@@ -1,0 +1,61 @@
+# ----------------------------------------------------------------
+# General
+# ----------------------------------------------------------------
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# ----------------------------------------------------------------
+# Environments & Secrets (IMPORTANT)
+# ----------------------------------------------------------------
+
+# Virtual environments
+.venv
+venv/
+env/
+
+# Environment variables
+# Never commit secrets, API keys, etc. to a repository!
+.env
+.env.*
+!.env.example
+
+# ----------------------------------------------------------------
+# Python
+# ----------------------------------------------------------------
+
+# Byte-compiled / optimized files
+__pycache__/
+*.py[oc]
+*.so
+
+# Distribution / packaging
+build/
+dist/
+wheels/
+*.egg-info/
+.eggs/
+
+# Installer logs
+pip-log.txt
+
+# ----------------------------------------------------------------
+# Tooling & Testing
+# ----------------------------------------------------------------
+
+# Linter/formatter caches
+.ruff_cache/
+.mypy_cache/
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ----------------------------------------------------------------
+# IDEs & Editors
+# ----------------------------------------------------------------
+.idea/
+.vscode/
+*.iml

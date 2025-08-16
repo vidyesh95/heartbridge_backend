@@ -1,0 +1,37 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+.ruff_cache
+.pytest_cache
+
+# Distribution / packaging
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+env/
+venv/
+
+# IDE and editor configuration
+.vscode/
+.idea/
+*.iml
+
+# Environment files - IMPORTANT for security
+.env
+.env.*
+
+# Project files
+tests/
+README.md
