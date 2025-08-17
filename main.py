@@ -7,8 +7,28 @@ This module contains the main FastAPI application with basic endpoints.
 from datetime import datetime, timezone, date
 from uuid import UUID, uuid4
 from enum import Enum
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, EmailStr, Field
+from dotenv import load_dotenv
+
+from db import close_pool, get_pool
+
+# Load environment variables
+load_dotenv()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Manage application lifespan events.
+    """
+    # Startup: Initialize database pool
+    await get_pool()
+    yield
+    # Shutdown: Close database pool
+    await close_pool()
 
 
 # Initialize the FastAPI application
@@ -16,6 +36,7 @@ app = FastAPI(
     title="Heartbridge API",
     description="A API for offline first matrimnial website which arranges first meetup between two parties.",
     version="0.0.1",
+    lifespan=lifespan,
 )
 
 
@@ -25,6 +46,8 @@ database = {"users": {}, "profiles": {}}
 
 class Gender(str, Enum):
     MALE = "Male"
+    FEMALE = "Female"
+    TRANSGENDER = "Transgender"
 
 
 class UserModel(BaseModel):
@@ -125,7 +148,7 @@ async def read_users():
 @app.post(
     "/users/{user_id}/profiles/", status_code=status.HTTP_201_CREATED, tags=["Profiles"]
 )
-async def create_profile(user_id: UUId, profile: ProfileModel):
+async def create_profile(user_id: UUID, profile: ProfileModel):
     """
     Create a new profile for a specific user
     "profile_id": profile_id,
@@ -151,7 +174,7 @@ async def create_profile(user_id: UUId, profile: ProfileModel):
     """
     # Check if user exists
     if user_id not in database["users"]:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     now: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     return profile
