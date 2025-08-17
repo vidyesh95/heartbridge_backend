@@ -1,4 +1,5 @@
 """
+https://gemini.google.com/app/35c1939e4979a87e
 FastAPI application main module.
 
 This module contains the main FastAPI application with basic endpoints.
@@ -48,13 +49,32 @@ class Gender(str, Enum):
     """
     Three genders Male, Female and Transgender
     """
+
     MALE = "Male"
     FEMALE = "Female"
     TRANSGENDER = "Transgender"
 
 
-class UserModel(BaseModel):
+class UserCreate(BaseModel):
     """
+    Model for creating a user. Client provides this data
+    """
+
+    email_id: EmailStr | None = None
+    phone_number: str | None = None
+    auth_provider: str | None
+    provider_id: str | None
+    first_name: str | None = None
+    middle_name: str | None = None
+    last_name: str | None = None
+    bookmarks: str
+    likes: str
+
+
+class UserResponse(BaseModel):
+    """
+    Server response.
+
     User is created on successful sign up with either email via otp,
     phone number via otp or by google Single Sign-On or apple Single Sign-On
     After account has been created user has option to add and verify remaining
@@ -75,7 +95,39 @@ class UserModel(BaseModel):
     likes: str
 
 
-class ProfileModel(BaseModel):
+class ProfileCreate(BaseModel):
+    """
+    Model for creating a Profile. Client provides this data
+
+    User is able to create zero or more profiles which are than
+    verified on the user request on phone number or email id
+    provided by user of the profile by admin side
+    """
+
+    profile_id: UUID = Field(default_factory=uuid4)
+    email_id: EmailStr | None = None
+    phone_number: str | None = None
+    first_name: str
+    middle_name: str
+    last_name: str
+    gender: Gender
+    birth_date: str
+    height: str
+    country_currently_residing: str
+    citizen_of_countries: str
+    annual_income: str
+    personal_assets: str | None = None
+    medical_history: str
+    profession: str | None = None
+    education: str | None = None
+    religion: str | None = None
+    is_verification_requested: bool = False
+    is_verified: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    modified_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class ProfileResponse(BaseModel):
     """
     User is able to create zero or more profiles which are than
     verified on the user request on phone number or email id
@@ -177,7 +229,9 @@ async def create_profile(user_id: UUID, profile: ProfileModel):
     """
     # Check if user exists
     if user_id not in database["users"]:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
 
     now: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     return profile
