@@ -45,6 +45,9 @@ database = {"users": {}, "profiles": {}}
 
 
 class Gender(str, Enum):
+    """
+    Three genders Male, Female and Transgender
+    """
     MALE = "Male"
     FEMALE = "Female"
     TRANSGENDER = "Transgender"
@@ -85,7 +88,7 @@ class ProfileModel(BaseModel):
     first_name: str
     middle_name: str
     last_name: str
-    gender: str
+    gender: Gender
     birth_date: str
     height: str
     country_currently_residing: str
